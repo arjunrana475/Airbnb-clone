@@ -5,7 +5,7 @@ const rateLimit = require("express-rate-limit");
 
 // const ExpressError = require("./utils/expressError.js");
 
-// const listingRouter = require("./routes/listingRoute.js");
+const listingRouter = require("./routes/listingRoute.js");
 // const reviewRouter = require("./routes/reviewRoute.js");
 const userRouter = require("./routes/userRoute");
 // const bookingRouter = require("./routes/bookingRoute.js");
@@ -34,7 +34,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 
-// app.use("/listings", listingRouter);
+app.use("/listings", listingRouter);
 // app.use("/listings/:id/reviews", reviewRouter);
 app.use("/users", userRouter);
 // app.use("/bookings", bookingRouter);
