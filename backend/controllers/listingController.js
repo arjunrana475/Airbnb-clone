@@ -1,13 +1,5 @@
 const Listing = require("../models/listing.js");
 
-const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
-
-const mapToken = process.env.MAP_TOKEN;
-
-const geocodingClient = mbxGeocoding({
-  accessToken: mapToken,
-});
-
 // GET /listings
 module.exports.showAllListings = async (req, res) => {
   const allListings = await Listing.find({}).populate("owner");
@@ -61,20 +53,6 @@ module.exports.createListing = async (req, res) => {
     amenities,
   } = req.body;
 
-  const response = await geocodingClient
-    .forwardGeocode({
-      query: location,
-      limit: 1,
-    })
-    .send();
-
-  if (!response.body.features.length) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid location",
-    });
-  }
-
   const newListing = new Listing({
     title,
     description,
@@ -89,10 +67,8 @@ module.exports.createListing = async (req, res) => {
     bathrooms,
     amenities,
 
-    // 🔐 Comes from JWT
+    // Comes from JWT
     owner: req.user.userId,
-
-    geometry: response.body.features[0].geometry,
   });
 
   await newListing.save();
@@ -101,6 +77,61 @@ module.exports.createListing = async (req, res) => {
     success: true,
     message: "Listing created successfully",
     listing: newListing,
+  });
+};
+
+// PUT /listings/:id
+module.exports.updateListing = async (req, res) => {
+  const { id } = req.params;
+
+  const {
+    title,
+    description,
+    price,
+    location,
+    country,
+    category,
+    propertyType,
+    maxGuests,
+    bedrooms,
+    beds,
+    bathrooms,
+    amenities,
+  } = req.body;
+
+  const listing = await Listing.findByIdAndUpdate(
+    id,
+    {
+      title,
+      description,
+      price,
+      location,
+      country,
+      category,
+      propertyType,
+      maxGuests,
+      bedrooms,
+      beds,
+      bathrooms,
+      amenities,
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  if (!listing) {
+    return res.status(404).json({
+      success: false,
+      message: "Listing not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Listing updated successfully",
+    listing,
   });
 };
 
