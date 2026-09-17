@@ -4,20 +4,20 @@ const generateToken = require("../utils/generateToken.js");
 
 module.exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { name, email, password } = req.body;
 
   const existingUser = await User.findOne({email });
 
   if (existingUser) {
     return res.status(400).json({
       success: false,
-      message: "Username or email already exists",
+      message: "name or email already exists",
     });
   }
   const hashedPassword = await bcrypt.hash(password, 12);
 
   const user = await User.create({
-    username,
+    name,
     email,
     password: hashedPassword,
   });
@@ -39,7 +39,7 @@ const token = generateToken(user._id);
     token,
     user: {
       id: user._id,
-      username: user.username,
+      name: user.name,
       email: user.email,
     },
   });
@@ -87,7 +87,7 @@ const token = generateToken(user._id);
     token,
     user: {
       id: user._id,
-      username: user.username,
+      name: user.name,
       email: user.email,
     },
   });
