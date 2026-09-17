@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
   {
-    username: {
+    name: {
       type: String,
       required: true,
       unique: true,
@@ -42,12 +42,14 @@ const userSchema = new Schema(
       enum: ["user", "admin"],
       default: "user",
     },
-    favorites: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Listing",
-      },
-    ],
+    listing: {
+      type: Schema.Types.ObjectId,
+      ref: "Listing",
+    },
+    booking: {
+      type: Schema.Types.ObjectId,
+      ref: "Booking",
+    },
   },
   { timestamps: true },
 );

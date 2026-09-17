@@ -2,12 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
+require("dotenv").config();
+const port = process.env.PORT || 3000;
 
-// const ExpressError = require("./utils/expressError.js");
 
 const listingRouter = require("./routes/listingRoute.js");
 // const reviewRouter = require("./routes/reviewRoute.js");
 const userRouter = require("./routes/userRoute");
+const { default: connectDB } = require("./config/db.js");
 // const bookingRouter = require("./routes/bookingRoute.js");
 
 const app = express();
@@ -24,8 +26,6 @@ app.use(
   }),
 );
 
-// Rate Limiting
-
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   limit: 100,
@@ -37,23 +37,8 @@ app.use(limiter);
 app.use("/listings", listingRouter);
 // app.use("/listings/:id/reviews", reviewRouter);
 app.use("/users", userRouter);
-// app.use("/bookings", bookingRouter);
 
-// 404 Handler
-
-// app.use((req, res, next) => {
-//   next(new ExpressError(404, "Page Not Found!"));
-// });
-
-// Global Error Handler
-
-// app.use((err, req, res, next) => {
-//   const { statusCode = 500, message = "Something went wrong" } = err;
-
-//   res.status(statusCode).json({
-//     success: false,
-//     message,
-//   });
-// });
-
-module.exports = app;
+app.listen(port, () => {
+  connectDB;
+  console.log(`Server listening to port ${port}.`);
+})
