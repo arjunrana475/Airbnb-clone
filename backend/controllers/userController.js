@@ -3,11 +3,10 @@ const bcrypt = require("bcrypt");
 const generateToken = require("../utils/generateToken.js");
 
 module.exports.register = async (req, res) => {
-  const { username, email, password } = req.body;
+  try {
+    const { username, email, password } = req.body;
 
-  const existingUser = await User.findOne({
-    $or: [{ email }, { username }],
-  });
+  const existingUser = await User.findOne({email });
 
   if (existingUser) {
     return res.status(400).json({
@@ -44,11 +43,15 @@ const token = generateToken(user._id);
       email: user.email,
     },
   });
+  } catch (e) {
+    console.log(`Signup error ${e}`);
+  }
 };
 
 
 module.exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
   const user = await User.findOne({ email });
 
@@ -88,12 +91,16 @@ const token = generateToken(user._id);
       email: user.email,
     },
   });
+  } catch (e) {
+    console.log(`Login error ${e}`);
+ }
 };
 
 // Logout
 
 module.exports.logout = (req, res) => {
-  res.clearCookie("token", {
+  try {
+     res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
@@ -103,12 +110,18 @@ module.exports.logout = (req, res) => {
     success: true,
     message: "Logged out successfully",
   });
+  }
+  catch (e) {
+    console.log(`Logout error ${e}`);
+  }
+ 
 };
 
 // Get Current User
 
 module.exports.getCurrentUser = async (req, res) => {
-  const user = await User.findById(req.user.userId).select("-password");
+  try {
+    const user = await User.findById(req.user.userId).select("-password");
 
   if (!user) {
     return res.status(404).json({
@@ -121,4 +134,9 @@ module.exports.getCurrentUser = async (req, res) => {
     success: true,
     user,
   });
+  }
+  catch (e) {
+    console.log(e);
+  }
+  
 };

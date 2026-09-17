@@ -34,9 +34,9 @@ const limiter = rateLimit({
 app.use(limiter);
 
 
-app.use("/listings", listingRouter);
-// app.use("/listings/:id/reviews", reviewRouter);
-app.use("/users", userRouter);
+app.use("/api/listings", listingRouter);
+// app.use("/api/listings/:id/reviews", reviewRouter);
+app.use("/api/users", userRouter);
 
 app.listen(port, () => {
   connectDB;
