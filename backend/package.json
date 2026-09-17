@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.11.0",
     "cookie-parser": "^1.4.7",
@@ -12,6 +13,8 @@
     "mongoose": "^9.9.5",
     "multer": "^2.3.0",
     "nodemailer": "^10.0.1",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "react-router-dom": "^7.18.4",
+    "tailwindcss": "^4.3.3"
   }
 }
